@@ -1,0 +1,107 @@
+Escreva as classes em uma folha e anexar a mesma digitada e também subir o na AEP.
+
+Crie uma classe pessoa com os seguintes atributos:
+(nome, data de nascimento, cpf,altura e peso)
+
+A classe pessoa deve ter um construtor que receba todos os dados para
+inicializar a classe e os seguintes métodos:
+-calculaIMC()
+-calculaIdade()
+-validaCPF()
+
+----- EXERCÍCIO AEP 2 -----
+
+<?php
+class Pessoa {
+  public $nome;
+  public $data_nascimento;
+  public $cpf;
+  public $altura;
+  public $peso;
+  public $imc;
+  public $idade;
+
+  function __construct($nome, $data_nascimento, $cpf, $altura, $peso) {
+    $this->nome = $nome;
+    $this->data_nascimento = $data_nascimento;
+    $this->cpf = $cpf;
+    $this->altura = $altura;
+    $this->peso = $peso;
+	
+ }
+
+	public function calculaIMC()
+	{
+		$imc = $peso / ($altura * $altura);
+		$this->imc = $imc;
+           		 if ($imc < 18.5)
+         		   {
+            		   	$this->statuspeso = 'Magro';
+        		   }
+       		     elseif ($imc >=18.5 and $imc <25)
+        		    {
+        		    	$this->statuspeso = 'Peso Ideal';
+            		    }
+            	     elseif ($imc > 25 and $imc < 30)
+            		    {
+                		$this->statuspeso = 'Acima do Peso';
+            		    }
+            	     elseif ($imc >= 30)
+            		    {
+                		$this->statuspeso = 'Obesidade';
+            		    }
+        }
+
+	public function calculaIdade()
+	{
+		$hoje = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+		$data_nascimento = mktime( 0, 0, 0, $mes, $dia, $ano);
+   		$idade = floor((((($hoje - $data_nascimento) / 60) / 60) / 24) / 365.25);
+		$this->idade = $idade;
+	}
+
+	public function validaCPF($cpf) 
+	{
+ 
+   	// Extrai somente os números
+    	$cpf = preg_replace( '/[^0-9]/is', '', $cpf );
+     
+   	// Verifica se foi informado todos os digitos corretamente
+    	if (strlen($cpf) != 11) 
+		{
+       		 return false;
+    		}
+	  // 1º Passo de validação - Validando o primeiro dígito
+	        $digitoA = 0;
+	        for ($n = 0, $d = 10; $n <= 8; $n++, $d--)
+	        {
+	            $digitoA += $cpf[$n]*$d;
+	        }
+		
+       	 $somaA = (($digitoA%11) < 2) ? 0 : 11-($digitoA%11);
+        	
+       	 // 2º Passo de validação - Validando o segundo dígito
+       	 $digitoB = 0;
+       	 for ($n = 0, $d = 11; $n <= 9; $n++, $d--)
+       	 {
+       	 // Checa se os números foram repetidos
+        	    if (str_repeat ($n, 11) == $cpf)
+        	    {
+        	        return false;
+        	    }    
+        	    $digitoB += $cpf[$n]*$d;
+	 }
+	
+	        $somaB = (($digitoB%11) < 2) ? 0 : 11-($digitoB%11);
+
+        	// 3º Passo de validação - Retornando validade da operação
+	        if ($somaA != $cpf[9] or $somaB != $cpf[10])
+       	 	 {
+        	    $this->cpf = 'CPF inválido';
+      	         }
+      	  	else
+      	 	 {
+       	   	    return true;
+         	 }
+  	}
+}
